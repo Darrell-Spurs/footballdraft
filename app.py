@@ -3,31 +3,33 @@ from markupsafe import escape
 import os
 import pymysql
 import pymysql.cursors
+from datetime import datetime
 
 app = Flask(__name__)
 
-connection = pymysql.connect(host=os.environ.get('CLEARDB_DATABASE_HOST'),
-                             user=os.environ.get('CLEARDB_DATABASE_USER'),
-                             password=os.environ.get('CLEARDB_DATABASE_PASSWORD'),
-                             db=os.environ.get('CLEARDB_DATABASE_DB'),
-                             charset='urf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor
-)
+connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
+                             user='b263072c1ab18d',
+                             password='e4aaaba1',
+                             db='heroku_594ae4223a52c95',
+                             #charset='urf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
 
 with connection.cursor() as cursor:
-    sql="INSERT INTO test(name) VALUES(%s,%s)"
-    cursor.execute(sql,('Fishead','male'))
+    sql="SELECT * FROM all_players"
+    cursor.execute(sql)
+    result=cursor.fetchall()
 
 connection.commit()
 
-@app.route('/')
-@app.route('/index')
-def index():
-    return "<h1>Deployed update<h1>"
-
 @app.route('/about')
+def index():
+    return render_template("test.html",
+                           current_time=str(datetime.now()))
+
+@app.route('/')
 def about():
-    return render_template('test.html')
+    return render_template('index.html',
+                           all_players=result)
 
 @app.route('/user/<username>')
 def user(username):
@@ -37,15 +39,13 @@ def user(username):
 def post(post_id):
     return "<h1>User %d</h1>"%post_id
 
-@app.route('/table')
+@app.route('/index')
 def connect_test():
     with connection.cursor() as cursor:
         sql="SELECT * FROM test WHERE gender=%s"
         cursor.execute(sql,('male'))
         result=cursor.fetchone()
-        print(result)
-    return f"<h1>Hi, {result[0]['name']} and {result[1]['name']}!<h1>"
+    return (f"<h1>Hello, {result['name']}!<h1>")
 
 if __name__ == '__main__':
     app.run(debug=True)
-
