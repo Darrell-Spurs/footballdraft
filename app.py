@@ -6,12 +6,14 @@ import pymysql.cursors
 import csv
 app = Flask(__name__)
 
-connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
-                             user='b263072c1ab18d',
-                             password='e4aaaba1',
-                             db='heroku_594ae4223a52c95',
-                             #charset='urf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor)
+def db_connect():
+    global connection
+    connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
+                                 user='b263072c1ab18d',
+                                 password='e4aaaba1',
+                                 db='heroku_594ae4223a52c95',
+                                 #charset='urf8mb4',
+                                 cursorclass=pymysql.cursors.DictCursor)
 
 @app.route('/')
 def about():
@@ -19,6 +21,7 @@ def about():
 
 @app.route('/players')
 def index():
+    db_connect()
     with connection.cursor() as cursor:
         sql = "SELECT * FROM all_players"
         cursor.execute(sql)
@@ -36,6 +39,7 @@ def connect_test():
         result=cursor.fetchone()
     return (f"<h1>Hello, {result['name']}!<h1>")
 
+#@app.route('/')
 @app.route('/teams')
 def teams():
     national=[]
@@ -52,6 +56,7 @@ def teams():
 
 @app.route('/teams/<nteam>')
 def national(nteam):
+    db_connect()
     national=[]
     nation_dict=dict()
     with open('Official.csv', newline="") as file:
