@@ -13,7 +13,7 @@ connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
                              #charset='urf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
-@app.route('/a')
+@app.route('/')
 def about():
     return render_template('home.html')
 
@@ -36,7 +36,6 @@ def connect_test():
         result=cursor.fetchone()
     return (f"<h1>Hello, {result['name']}!<h1>")
 
-@app.route('/')
 @app.route('/teams')
 def teams():
     national=[]
