@@ -1,0 +1,23 @@
+{% include 'header.html' %}
+<style>
+.nation{
+    padding-left: 20px;
+    font-family: 'Candara';
+}
+
+a{
+    color: black;
+    font-size: 30px;
+}
+</style>
+</head>
+
+<body>
+    {% for country in countries %}
+    <div>
+        <a class="nation" href={{ "/teams/%s"%country }}>{{ country }}</a>
+    </div>
+    {% endfor %}
+
+</body>
+{% include 'footer.html' %}

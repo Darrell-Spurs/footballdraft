@@ -1,0 +1,27 @@
+{% include 'header.html' %}
+<style>
+.p_cards{
+    padding-top: 10px;
+    padding-left: 30px;
+    width: 200px;
+    height: auto;
+}
+.group-title{
+    padding-top: 25px;
+    padding-left: 30px;
+    font-family: 'Candara';
+}
+</style>
+</head>
+
+<body>
+    {% for i in range (results| length) %}
+        <div>
+            <h2 class="group-title">{{ groups[i] }}</h2>
+            {% for player in results[i] %}
+            <img class="p_cards" {{" src= /static/投影片%s.JPG"%player['ID'] }}>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</body>
+{% include 'footer.html' %}

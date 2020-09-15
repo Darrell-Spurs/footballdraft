@@ -1,15 +1,4 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club List</title>
-    <!---css link--->
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+{% include 'header.html' %}
     <style>
     h1{
         padding-left: 60px;
@@ -23,10 +12,10 @@
 </head>
 <body>
 <h1>Global League Player Draw</h1>
-<div class="container my-5">
+<div class="container my-5" id="players-table">
     <div class="row">
         <div class="col">
-        <table id="city-table" class="table table-striped table-bordered table-hover list" width="100%">
+        <table class="table table-striped table-bordered table-hover list" width="100%">
             <thead>
                 <tr>
                     <th scope="col">Pick</th>
@@ -41,7 +30,7 @@
                 {% for player in all_players %}
                     <tr>
                         <td>{{ player['ID'] }}</td>
-                        <td>{{ player['Owner'] }}</td>
+                        <td><a href="#">{{ player['Owner'] }}</td>
                         <td>{{ player['Player'] }}</td>
                         <td>{{ player['Position'] }}</td>
                         <td>{{ player['Club'] }}</td>
@@ -54,7 +43,12 @@
         </div>
     </div>
 </div>
-
+<script>
+    $(document).ready(function () {
+      $('#players-table').DataTable();
+      $('.dataTables_length').addClass('bs-select');
+    })
+</script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
