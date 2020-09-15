@@ -48,7 +48,7 @@ def teams():
         rows=csv.reader(file)
         for elem in rows:
             national.append(elem)
-        countries = national[1:12]
+        countries = national[1:13]
 
         for team in countries:
             nation_dict[team[0]] = team[1:]
@@ -63,7 +63,7 @@ def national(nteam):
         rows=csv.reader(file)
         for elem in rows:
             national.append(elem)
-        countries = national[1:12]
+        countries = national[1:13]
 
         for team in countries:
             while "" in team:
