@@ -6,6 +6,8 @@ import pymysql.cursors
 import csv
 app = Flask(__name__)
 
+print('sfjkahfksdajhfhdhadahfjljljljljlsd')
+
 def db_connect():
     global connection
     connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
@@ -15,7 +17,7 @@ def db_connect():
                                  #charset='urf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
-@app.route('/')
+@app.route('/a')
 def about():
     return render_template('home.html')
 
@@ -27,6 +29,7 @@ def index():
         cursor.execute(sql)
         result = cursor.fetchall()
     connection.commit()
+    connection.close()
 
     return render_template("players.html",
                            all_players=result)
@@ -40,7 +43,7 @@ def connect_test():
     return (f"<h1>Hello, {result['name']}!<h1>")
 
 #@app.route('/')
-@app.route('/teams')
+@app.route('/')
 def teams():
     national=[]
     nation_dict=dict()

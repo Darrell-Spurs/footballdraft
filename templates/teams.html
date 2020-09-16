@@ -1,19 +1,34 @@
 {% include 'header.html' %}
 <style>
 .nation{
-    padding-left: 20px;
+
     font-family: 'Candara';
     color: black;
-    font-size: 30px;;
+    font-size: 30px;
 }
-
+.info{
+    text-align: center;
+}
+.flag{
+    width: 290px;
+    height: auto;
+    padding-top:30px;
+    margin: -58px 0px -24px 0 ;
+}
+.card{
+    display: inline-block;
+    border-width: 2px;
+    border-color: (200,200,200);
+    margin: 15px;
+}
 </style>
 </head>
 
 <body>
     {% for country in countries %}
-    <div>
-        <a class="nation" href={{ "/teams/%s"%country }}>{{ country }}</a>
+    <div class="card">
+        <a href={{ "/teams/%s"%country }}><img class="flag" {{" src=/static/nation/%s.png" % country }} href={{ "/teams/%s"%country }}></a>
+        <p class="info"><a class="nation" href={{ "/teams/%s"%country }}>{{ country }}</a></p>
     </div>
     {% endfor %}
 
