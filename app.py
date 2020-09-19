@@ -1,4 +1,4 @@
-from flask import Flask,request,render_template, url_for
+from flask import Flask,request,render_template, url_for,redirect
 from markupsafe import escape
 import os
 import pymysql
@@ -14,6 +14,21 @@ def db_connect():
                                  db='heroku_594ae4223a52c95',
                                  #charset='urf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
+def add_to_N(nteam,action_name):
+    db_connect()
+    with connection.cursor() as cursor:
+        sql = "UPDATE all_players SET NATIONAL='%s' WHERE ID=%s" % (nteam, action_name)
+        cursor.execute(sql)
+        connection.commit()
+    connection.close()
+
+def del_from_N(action_name):
+    db_connect()
+    with connection.cursor() as cursor:
+        sql = "UPDATE all_players SET NATIONAL=NULL WHERE ID=%s" % (action_name)
+        cursor.execute(sql)
+        connection.commit()
+    connection.close()
 
 @app.route('/')
 def about():
@@ -58,41 +73,50 @@ def teams():
 
 @app.route('/teams/<nteam>')
 def national(nteam):
-    db_connect()
-    national=[]
-    nation_dict=dict()
-    with open('Official.csv', newline="") as file:
-        rows=csv.reader(file)
-        for elem in rows:
-            national.append(elem)
-        countries = national[1:13]
+    action_add = request.args.get('a')
+    action_del = request.args.get('d')
+    if(action_add!=None):
+        add_to_N(nteam,action_add)
+        return redirect('/teams/%s'%nteam)
+    elif (action_del != None):
+        del_from_N(action_del)
+        return redirect('/teams/%s' % nteam)
+    else:
+        db_connect()
+        national=[]
+        nation_dict=dict()
+        with open('Official.csv', newline="") as file:
+            rows=csv.reader(file)
+            for elem in rows:
+                national.append(elem)
+            countries = national[1:13]
 
-        for team in countries:
-            while "" in team:
-                team.remove("")
-            nation_dict[team[0]] = team[1:]
-        sql_str=""
-        for member in nation_dict[nteam]:
-            sql_str+=f'Nation = "{member}" OR '
-        sql_str=sql_str[:-4]
+            for team in countries:
+                while "" in team:
+                    team.remove("")
+                nation_dict[team[0]] = team[1:]
+            sql_str=""
+            for member in nation_dict[nteam]:
+                sql_str+=f'Nation = "{member}" OR '
+            sql_str=sql_str[:-4]
 
-        position=[['GK'],['LB','CB','RB'],['CAM','CM','CDM','LM','RM'],['LW','RW','ST','CF']]
-        groups = ["Goalkeepers","Defenders","Midfielders","Attackers"]
-        results = []
-        for poses in position:
-            sql_pos = ""
-            for pos in poses:
-                sql_pos += f'Position = "{pos}" OR '
-            sql_pos = sql_pos[:-4]
+            position=[['GK'],['LB','CB','RB'],['CAM','CM','CDM','LM','RM'],['LW','RW','ST','CF']]
+            groups = ["Goalkeepers","Defenders","Midfielders","Attackers"]
+            results = []
+            for poses in position:
+                sql_pos = ""
+                for pos in poses:
+                    sql_pos += f'Position = "{pos}" OR '
+                sql_pos = sql_pos[:-4]
 
-            with connection.cursor() as cursor:
-                sql=f"SELECT * FROM all_players WHERE Owner = 'Darrell' AND ({sql_str}) AND ({sql_pos})"
-                cursor.execute(sql)
-                result=cursor.fetchall()
-                results.append(result)
-            connection.commit()
-    connection.close()
-    return render_template("national.html", results=results, groups=groups)
+                with connection.cursor() as cursor:
+                    sql=f"SELECT * FROM all_players WHERE Owner = 'Darrell' AND ({sql_str}) AND ({sql_pos})"
+                    cursor.execute(sql)
+                    result=cursor.fetchall()
+                    results.append(result)
+                connection.commit()
+        connection.close()
+        return render_template("national.html", results=results, groups=groups, nteam=nteam)
 
 @app.route('/user/<username>')
 def user(username):
