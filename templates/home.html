@@ -1,20 +1,56 @@
 {% include 'header.html' %}
 <style>
+    *{
+        font-family:'Candara';
+    }
     .home{
         padding-left: 20px;
         padding-top:10px;
-        font-family:'Candara';
     }
     .sub-title{
         padding-left: 20px;
         padding-top:10px;
         font-size:40px;
-        font-family:'Candara';
     }
     .news{
         padding-left: 20px;
         width: 900px;
         height: auto;
+    }
+    .search-field{
+        padding: 16px 10px 8px 16px;
+        font-size: 28px;
+    }
+    .result-field{
+        padding: 4px 4px 4px 8px;
+        font-size: 28px;
+    }
+    .card_result{
+        width: 180px;
+        padding: 5px 30px 5px 30px;
+    }
+    .check{
+        color: green;
+        vertical-align: middle;
+        border-width: 0px;
+        margin-left: 3px;
+        padding: 0 0 0 0;
+        width: 4%;
+    }
+    .formation_select{
+        padding: 16px 10px 8px 16px;
+        font-size: 28px;
+    }
+    .builder{
+      display: flex;
+      justify-content: center;
+    }
+    .card-div{
+        text-align: center;
+    }
+    .b-add{
+        height: 30px;
+        padding: 0px 5px 6px 5px;
     }
 </style>
 </head>
@@ -22,5 +58,124 @@
     <h1 class="home">Home</h1>
     <h2 class="sub-title">NEWS</h2>
     <img class="news" src="static/news/new001.JPG">
+
+    <div class="search-field">
+        <label for="enter">Search Player</label>
+        <input id="enter" name="enter" type="text">
+        <button class="btn btn-success" id="search-submit">submit</button>
+    </div>
+    <div id="search-result" class="result-field">
+    </div>
+
+    <div class="formation_select">
+        <label for="formation">Formation:</label>
+            <select name="formation" id="formation">
+                <option value="4-3-3">4-3-3</option>
+                <option value="4-2-3-1">4-2-3-1</option>
+                <option value="4-2-2-2">4-2-2-2</option>
+                <option value="4-4-2">4-4-2</option>
+                <option value="4-4-1-1">4-4-1-1</option>
+            </select>
+        <button id="format" class="btn btn-info">Select</button>
+    </div>
+
+    <div id="build">
+
+    </div>
+
+    <script language="JavaScript" type="text/javascript">
+
+
+    $(document).ready(function(){
+        console.log('ready');
+
+        var url = 'http://' + document.domain + ':' + location.port + '/';
+        console.log(url);
+        var socket=io.connect(url);
+
+        $("#search-submit").click(function(){
+            console.log('click');
+            var field = $("#enter").val();
+            console.log( field );
+            socket.emit('home_search',{data:field});
+        });
+
+        socket.on('home_result',function(msg){
+            var result = JSON.parse(msg['data']);
+            var show_result = "";
+            result.forEach(function(item){
+                console.log(item);
+                show_result+=
+                '<p>'+item['Player']+'<button id="'+item['ID']+'" class="check btn btn-outline-light"><i class="far fa-check-circle"></i></button></p>';
+            });
+            $('#search-result').html(show_result);
+        });
+
+        $("#search-result").on("click","button.check",function(){
+            console.log($(this).attr("id"));
+            var id = $(this).attr("id")
+            var show_image='<p><img class="card_result" src="./static/投影片'+id+'.JPG"></p>'
+            $('#search-result').html(show_image);
+        });
+
+        $("#format").click(function(){
+            $("#build").empty()
+            var formation = "1-"+$("#formation").val();
+            var result = formation.split("-");
+            var pos = 0;
+            result.forEach(function(item){
+                var line = "";
+                line+='<div class="builder">'
+                for(var i=0;i<item;i++){
+                    pos+=1;
+                    line+=
+                    `<div class="card-div" id="card-div`+pos+`">
+                        <img class="card_result" id="card_result`+pos+`" src="./static/Card Outline.jpg"><br>
+                        <input name="enter" type="text" size="10">
+                        <button id="bd-`+pos+`" class="b-add btn btn-light">+</button>
+                        <div class="builder-sresult" id="search-result`+pos+`"></div>
+                    </div>`;
+                }
+                line+='</div">'
+                $("#build").prepend(line)
+            });
+        });
+
+        $("#build").on("click","button.b-add",function(){
+            console.log("added");
+            var field = $(this).prev().val();
+            var pos = $(this).attr('id');
+            console.log( field, pos );
+            socket.emit('builder_search',{data:field,pos:pos});
+        });
+
+        socket.on('builder_result',function(msg){
+            var result = JSON.parse(msg['data']);
+            var show_result = "";
+            var ctrl=0;
+            result.forEach(function(item){
+                if(ctrl==0){
+                    show_result = "";
+                    ctrl++;
+                }
+                else{
+                console.log(item);
+                show_result+=
+                '<p>'+item['Player']+'<button id="'+item['ID']+'" class="check btn btn-outline-light"><i class="far fa-check-circle"></i></button></p>';
+                }
+            console.log('#search-result'+result[0]['pos'])
+            $('#search-result'+result[0]['pos']).html(show_result);
+            });
+        });
+        $(document).on("click","button.check",function(){
+            console.log($(this).attr("id"));
+            var id = $(this).attr("id")
+            var area = $(this).parent().parent().attr('id').slice(13);
+             show_image='<img class="card_result" id="card_result'+area+'" src="./static/投影片'+id+'.JPG">'
+            $('#card-div'+area).empty();
+            $('#card-div'+area).html(show_image);
+        });
+    });
+    </script>
 </body>
 {% include 'footer.html' %}

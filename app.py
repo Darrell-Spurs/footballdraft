@@ -1,10 +1,12 @@
 from flask import Flask,request,render_template, url_for,redirect
+from flask_socketio import SocketIO, send, emit
 from markupsafe import escape
-import os
+import json
 import pymysql
 import pymysql.cursors
 import csv
 app = Flask(__name__)
+io = SocketIO(app=app)
 
 def db_connect():
     global connection
@@ -21,7 +23,6 @@ def add_to_N(nteam,action_name):
         cursor.execute(sql)
         connection.commit()
     connection.close()
-
 def del_from_N(action_name):
     db_connect()
     with connection.cursor() as cursor:
@@ -126,7 +127,44 @@ def user(username):
 def post(post_id):
     return "<h1>User %d</h1>"%post_id
 
+@io.on('connect')
+def io_connect():
+    print('socket connected')
 
+@io.on('disconnect')
+def io_disconnect():
+    print('socket disconnected')
+
+@io.on('home_search')
+def home_search(msg):
+    print('Recieved',msg)
+    recieved = msg['data']
+    db_connect()
+    with connection.cursor() as cursor:
+        sql = f"SELECT * FROM all_players WHERE Player LIKE '%{recieved}%'"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        result = json.dumps(result)
+        connection.commit()
+    connection.close()
+    emit('home_result',{'data':result})
+    print(result)
+
+@io.on('builder_search')
+def home_search(msg):
+    print('Recieved',msg)
+    recieved = msg['data']
+    db_connect()
+    with connection.cursor() as cursor:
+        sql = f"SELECT * FROM all_players WHERE Player LIKE '%{recieved}%'"
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        result.insert(0,{'pos':msg['pos'][3:]})
+        result = json.dumps(result)
+        connection.commit()
+    connection.close()
+    emit('builder_result',{'data':result})
+    print(result)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    io.run(app)
