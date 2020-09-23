@@ -5,7 +5,10 @@ import json
 import pymysql
 import pymysql.cursors
 import csv
+import eventlet
+import os
 app = Flask(__name__)
+
 io = SocketIO(app=app)
 
 def db_connect():
@@ -30,6 +33,7 @@ def del_from_N(action_name):
         cursor.execute(sql)
         connection.commit()
     connection.close()
+
 
 @app.route('/')
 def about():
