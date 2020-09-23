@@ -9,7 +9,8 @@ import eventlet
 import os
 app = Flask(__name__)
 
-io = SocketIO(app=app)
+async_mode='eventlet'
+io = SocketIO(app=app,async_mode=async_mode)
 
 def db_connect():
     global connection
