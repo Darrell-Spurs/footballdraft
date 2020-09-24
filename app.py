@@ -6,7 +6,9 @@ import pymysql
 import pymysql.cursors
 import csv
 app = Flask(__name__)
-io = SocketIO(app=app)
+
+#io = SocketIO(app=app, log=True, async_mode="eventlet")
+io = SocketIO(app=app, async_mode="eventlet")
 
 def db_connect():
     global connection

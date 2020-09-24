@@ -75,7 +75,7 @@
                     <img class="p_cards" {{" src= /static/投影片%s.JPG"%player['ID'] }}>
 
                     <div class="p_words">
-                        <p class="p_name">{{ a[a.find(' '):] if a.find(' ')!=(-1) else a }}</p>
+                        <p class="p_name">{{ player['Player'][player['Player'].find(' '):] if player['Player'].find(' ')!=(-1) else player['Player'] }}</p>
                         <p class="p_text">{{ "Pick %s-%s (%s)"%((player['Round']),player['Pick'],player['ID']) }}</p>
                         <p class="p_text">{{ "%s | %s"%(player['Position-TM'],player['Age']) }}</p>
                         <p class="p_text">Global League Team</p>
