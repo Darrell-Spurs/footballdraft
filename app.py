@@ -5,12 +5,8 @@ import json
 import pymysql
 import pymysql.cursors
 import csv
-import eventlet
-import os
 app = Flask(__name__)
-
-async_mode='eventlet'
-io = SocketIO(app=app,async_mode=async_mode)
+io = SocketIO(app=app)
 
 def db_connect():
     global connection
@@ -34,7 +30,6 @@ def del_from_N(action_name):
         cursor.execute(sql)
         connection.commit()
     connection.close()
-
 
 @app.route('/')
 def about():
