@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{% include 'header.html' %}
+<style>
+    *{
+        font-family:'Candara'
+    }
+    .choices{
+        display: flex;
+        justify-content: space-around;
+        border-radius: 10%;
+        border-width: 2px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+    .choice-img{
+         text-align: center;
+    }
+    .flex-box{
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+    .player-box{
+        text-align: center;
+        margin: 12px 12px 12px 12px;
+        border-width: 2px;
+        border-style: solid;
+        width: 300px;
+        height: 350px;
+        border-radius:6%;
+    }
+    .player-name{
+        margin: 20px 0 0 0;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .player-card{
+        margin: 12px 0 0 0;
+        height: 270px;
+        width:auto;
+    }
+    .club{
+        margin: 20px 6px 0 0;
+        width: 25px;
+        height: auto;
+    }
+    .player-info{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .c1{
+        border-color: #48BD19;
+        color: #48BD19;
+    }
+    .c2{
+        border-color: grey;
+        color: grey;
+    }
+    .c3{
+        border-color: red;
+        color: red;
+    }
+    .c4{
+        border-color: #957A05;
+        color: #957A05;
+    }
+    .c5{
+        border-color: #1474F5;
+        color: #1474F5;
+    }
+</style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Round {{r}}</title>
+</head>
+<body>
+    <h1>Round {{r}} Summary</h1>
+    <div class="choices">
+        <span class="player-box c1">Best Player <img class="player-card" src="/static/投影片1.jpg"></span>
+        <span class="player-box c2">Worst Player <img class="player-card" src="/static/投影片2.jpg"></span>
+        <span class="player-box c3">Best Pick <img class="player-card" src="/static/投影片3.jpg"></span>
+        <span class="player-box c4">Worst Pick <img class="player-card" src="/static/投影片5.jpg"></span>
+        <span class="player-box c5">Rising Star <img class="player-card" src="/static/投影片6.jpg"></span>
+    </div>
+    <br>
+    <div class="flex-box">
+        {% for player in result %}
+        <span class="player-box">
+            <div class="player-info">
+                <img class="club" {{"src=/static/teams/"+player['Club'] +".jpg"}}>
+                <span class="player-name">{{player['Player']}}</span>
+            </div>
+            <img class="player-card" {{"src=/static/投影片%s.JPG"%player['ID']}}>
+        </span>
+        {% endfor %}
+    </div>
+</body>
+</html>
+{% include 'footer.html' %}

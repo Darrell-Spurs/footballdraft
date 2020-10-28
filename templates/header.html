@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <style>
+        font-family: 'Candara';
+    </style>
     <!---Title--->
     {% block title %}
     <title> Welcome to the Website of Football Draft </title>
@@ -26,10 +29,17 @@
             <a class="nav-link" href="/players">Players</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/draft">Draft</a>
+            <a class="nav-link" href="/round/1">Draft</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/stats">Stats</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="trans_dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Transactions
+            </a>
+            <div class="dropdown-menu" aria-labelledby="trans_dropdown">
+              <a class="dropdown-item" href="/transactions/real">Real World Transactions</a>
+              <a class="dropdown-item" href="/transactions/records">Transaction Records</a>
+              <a class="dropdown-item" href="/transactions/tool">Transaction Tool</a>
+            </div>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/teams">Teams</a>

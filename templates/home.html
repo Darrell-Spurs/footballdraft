@@ -27,7 +27,7 @@
     }
     .card_result{
         width: 180px;
-        padding: 5px 30px 5px 30px;
+        padding: 16px 30px 16px 30px;
     }
     .check{
         color: green;
@@ -51,6 +51,11 @@
     .b-add{
         height: 30px;
         padding: 0px 5px 6px 5px;
+    }
+    .s_name{
+        padding: 12px 0px 12px 16px;
+    }
+    .s_save{
     }
 </style>
 </head>
@@ -77,6 +82,10 @@
                 <option value="4-4-1-1">4-4-1-1</option>
             </select>
         <button id="format" class="btn btn-info">Select</button>
+        <span class="s_name">Squad Name:
+            <input id="s_name" type="text">
+            <button id="s_save" class="btn btn-primary">Save</button>
+        </span>
     </div>
 
     <div id="build">
@@ -85,21 +94,23 @@
 
     <script language="JavaScript" type="text/javascript">
 
-
     $(document).ready(function(){
         console.log('ready');
 
-        var url = 'wss://' + document.domain + ':' + location.port + '/';
+        var url = 'http://' + document.domain + ':' + location.port;
         console.log(url);
-        var socket=io.connect(url);
+        var socket = io.connect(url);
 
+        //search bar action
         $("#search-submit").click(function(){
             console.log('click');
             var field = $("#enter").val();
             console.log( field );
+            //send search data
             socket.emit('home_search',{data:field});
         });
 
+        //recieve user search input
         socket.on('home_result',function(msg){
             var result = JSON.parse(msg['data']);
             var show_result = "";
@@ -111,6 +122,7 @@
             $('#search-result').html(show_result);
         });
 
+        //show selected player card
         $("#search-result").on("click","button.check",function(){
             console.log($(this).attr("id"));
             var id = $(this).attr("id")
@@ -118,9 +130,10 @@
             $('#search-result').html(show_image);
         });
 
+        //select formation
         $("#format").click(function(){
             $("#build").empty()
-            var formation = "1-"+$("#formation").val();
+            var formation = "7-1-"+$("#formation").val();
             var result = formation.split("-");
             var pos = 0;
             result.forEach(function(item){
@@ -140,6 +153,7 @@
                 $("#build").prepend(line)
             });
         });
+
 
         $("#build").on("click","button.b-add",function(){
             console.log("added");
@@ -174,6 +188,15 @@
              show_image='<img class="card_result" id="card_result'+area+'" src="./static/投影片'+id+'.JPG">'
             $('#card-div'+area).empty();
             $('#card-div'+area).html(show_image);
+        });
+        $(".s_name").on("click","#s_save",function(){
+            var players = [];
+            players.push($("#s_name").val());
+            for(var i=1;i<=18;i++){
+                players.push($("#card_result"+i).attr("src").slice(12,-4));
+            };
+            console.log(players);
+            socket.emit("save_squad",{players:players});
         });
     });
     </script>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+{% include 'header.html' %}
+<style>
+     body{
+        font-family: 'Candara';
+     }
+     h2,h3{
+        margin: 12px 8px 12px 16px;
+     }
+     label{
+         margin: 12px 8px 12px 40px;
+     }
+     button{
+        margin: 6px 8px 12px 40px;
+        height: 48px;
+        font-size: 12px;
+     }
+     .dropdown_search{
+        list-style-type: none;
+        margin-top:-10px;
+     }
+     .drop_elem{
+        font-size: 18px;
+        margin-top: -1px;
+        display: flex;
+        border: 1px;
+        border-style: solid;
+        border-color: #888888;
+        align-items: center;
+        width: 230px;
+        height: 38px;
+        margin-left: 146px;
+        padding-left: 10px;
+        background-color: #eeeeee;
+     }
+     .drop_elem:hover{
+        background-color: #cccccc;
+     }
+</style>
+</head>
+<body>
+    <h2>Transactions</h2>
+    <div id="drop-div">
+        <h3>Drop & Add</h3>
+        <label for="drop">Player dropped: </label>
+        <input type="text" placeholder="Enter Name" id="drop"><br>
+        <ul class="dropdown_search" id="drop_result">
+        </ul>
+        <label for="add">Player added: </label>
+        <input type="text" placeholder="Enter Name" id="add"><br>
+        <label for="add"> Position: </label>
+        <input type="text" placeholder="Enter Name" id="pos"><br>
+        <label for="add"> Nation: </label>
+        <input type="text" placeholder="Enter Name" id="nat"><br>
+        <button id="dna" class="btn btn-outline-success">Submit</button>
+    </div>
+    <div id="trade-div">
+        <h3> Trade </h3>
+        <label for="drop">Trade Requester: </label>
+        <input type="text" placeholder="Enter Name" id="req"><br>
+        <label for="out">Trade Out: </label>
+        <input type="text" placeholder="Enter Name" id="out"><br>
+        <label for="in">Trade In: </label>
+        <input type="text" placeholder="Enter Name" id="in"><br>
+        <button id="trade" class="btn btn-outline-primary">Submit</button>
+    </div>
+    <script language="JavaScript" type="text/javascript">
+        $(document).ready(function(){
+            console.log('ready');
+
+            var url = 'http://' + document.domain + ':' + location.port;
+            console.log(url);
+            var socket = io.connect(url);
+
+            $('#drop-div').on('click','#dna',function(){
+                console.log('drop and add');
+                add = $('#add').val();
+                drop = $('#drop').val();
+                pos = $('#pos').val();
+                nat = $('#nat').val();
+                console.log(add,drop,pos,nat);
+                socket.emit('pick',{add:add,drop:drop,pos:pos,nat:nat});
+            });
+            $('#drop').on('input',function(){
+                sug = $('#drop').val();
+                if(sug.length>2){
+                    sug = $('#drop').val();
+                    console.log('typing...',sug);
+                    socket.emit('suggest',{sug:sug});
+                }
+            });
+            $('#trade-div').on('click','#trade',function(){
+                console.log('trade');
+                req = $('#req').val();
+                out = $('#out').val();
+                tin = $('#in').val();
+                console.log(req,out,tin);
+                socket.emit('trade',{req:req,out:out,tin:tin});
+            });
+            socket.on('sug_result',function(msg){
+                var result = msg['result'];
+                console.log(result);
+                var div = " "
+                result.forEach(function(item){
+                    div+='<li class="drop_elem">'+item['player']+'</li>'
+                });
+                $('.dropdown_search').html(div);
+
+                $('.drop_elem').on('click',function(){
+                    name = $(this).text();
+                    $('.dropdown_search').empty();
+                    $('#drop').val(name);
+                });
+
+            });
+        });
+
+    </script>
+</body>
+</html>
+{% include 'footer.html' %}
