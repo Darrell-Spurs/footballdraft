@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+{% include 'header.html' %}
+<style>
+     body{
+        font-family: 'Candara';
+     }
+     h2,h3{
+        margin: 24px 8px 12px 16px;
+     }
+     .trans-mark{
+        margin: 5px 8px 5px 8px;
+        width: 32px;
+     }
+     .trans-table{
+        margin: 12px 8px 12px 24px;
+     }
+     .name-column{
+        width: 268px;
+        text-align: center;
+     }
+     .pos-column{
+        width: 48px;
+     }
+     .table-row{
+        height:80px;
+        border-top: 1px solid;
+        border-bottom: 1px solid;
+     }
+     .time-row{
+        font-size:20px;
+        height:56px;
+        padding-top: 12px;
+     }
+     .prime-content{
+        font-size: 24px;
+        font-weight: bold;
+     }
+     .club-field{
+        margin-top:-8px;
+        font-size:18px;
+        color: #666666;
+     }
+     .row-flag{
+        height: 36px;
+        margin-top: -6px;
+        margin-right: 2px;
+     }
+</style>
+</head>
+<body>
+    <h2>Transactions Records</h2>
+    <div class="trades">
+        <h3>Trades</h3>
+        <table class="trans-table">
+            {% set check = [0] %}
+            {% for trade in trades %}
+                {% do check.append(trade["Number"]) %}
+                {% if check[loop.index]!=check[loop.index-1] %}
+                <tr>
+                    <td class="time-row">Trade #{{trade["Number"]}} {{trade["Date"]}}</td>
+                </tr>
+                {% endif %}
+                <tr class="table-row">
+                    <td class="name-column">
+                        <span class="prime-content">
+                            <img class="row-flag" src="/static/flags/{{trade['Player1']['Nation']}}.png">
+                            {{ trade["Player1"]["Name"] }}</span><br>
+                        <span class="club-field">{{ trade["Player1"]["Club"] }}</span></td>
+                    <td class="pos-column">{{ trade["Player1"]["Pos"] }}</td>
+
+                    <td><img class="trans-mark" src="/static/icons/trade.png"></td>
+
+                    <td class="name-column">
+                        <span class="prime-content">
+                            <img class="row-flag" src="/static/flags/{{trade['Player2']['Nation']}}.png">
+                            {{ trade["Player2"]["Name"] }}</span><br>
+                        <span class="club-field">{{ trade["Player2"]["Club"] }}</span></td>
+                    <td class="pos-column">{{ trade["Player2"]["Pos"] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="trades">
+        <h3>Add & Drops</h3>
+        <table class="trans-table">
+            {% for trade in dropnadd %}
+                <tr>
+                    <td class="time-row">Drop & Add #{{loop.index}} {{trade["Date"]}}</td>
+                </tr>
+                <tr class="table-row">
+                    <td class="name-column">
+                        <span class="prime-content">
+                            <img class="row-flag" src="/static/flags/{{trade['Player1']['Nation']}}.png">
+                            {{ trade["Player1"]["Name"] }}</span><br>
+                        <span class="club-field">{{ trade["Player1"]["Club"] }}</span></td>
+                    <td class="pos-column">{{ trade["Player1"]["Pos"] }}</td>
+
+                    <td><img class="trans-mark" src="/static/icons/renew.png"></td>
+
+                    <td class="name-column">
+                        <span class="prime-content">
+                            <img class="row-flag" src="/static/flags/{{trade['Player2']['Nation']}}.png">
+                            {{ trade["Player2"]["Name"] }}</span><br>
+                        <span class="club-field">{{ trade["Player2"]["Club"] }}</span></td>
+                    <td class="pos-column">{{ trade["Player2"]["Pos"] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <script language="JavaScript" type="text/javascript">
+        $(document).ready(function(){
+            console.log('ready');
+
+            var url = 'http://' + document.domain + ':' + location.port;
+            console.log(url);
+            var socket = io.connect(url);
+        });
+    </script>
+</body>
+</html>
+{% include 'footer.html' %}

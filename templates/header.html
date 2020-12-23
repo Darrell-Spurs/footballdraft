@@ -3,7 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        font-family: 'Candara';
+        *{
+            font-family: 'Candara';
+        }
+        nav{
+            background-color: #eeeeee;
+            color: #111111;
+            line-height: 72px;
+            height: auto;
+            margin: 0 0 0 0;
+            padding: 0 0 0 0;
+         }
+         .header-logo{
+            height: 52px;
+            margin-right: 20px;
+         }
+         a:hover{
+             text-decoration-line: none !important;
+        }
+        .nav-list a{
+            vertical-align: center;
+            text-align: center;
+            width: auto;
+            padding: 0 20px 0 20px;
+            font-size: 28px;
+            display: inline-block;
+            transition: 1s;
+            color: #666666;
+        }
+        @keyframes color-change{
+            0% {background-color: #dddddd;}
+            50% {background-color: #cccccc;}
+            100% {background-color: #dddddd;}
+        }
+        .nav-item{
+            float: left;
+            overflow: hidden;
+        }
+        .nav-list>span>a:hover{
+           color:#333333;
+           text-decoration-line: none;
+           animation-name: color-change;
+           animation-duration: 2s;
+           animation-iteration-count: infinite;
+        }
+        .dropdown-ul{
+            float: left;
+            list-style-type:none;
+            margin: -2px 0 0 0;
+            padding: 0 0 0 0;
+            line-height:36px;
+            position: absolute;
+            display: block;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-ul li{
+            background-color:#DDDDDD;
+            font-size: 18px;
+            padding:3px 2px 3px 2px;
+         }
+         .dropdown-ul li:hover{
+            animation: none;
+         }
     </style>
     <!---Title--->
     {% block title %}
@@ -15,45 +77,40 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
     <script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous"></script>
-    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-      <a class="navbar-brand" href="/">PHOTO</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-    <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/fixtures">Fixtures</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/players">Players</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/round/1">Draft</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="trans_dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Transactions
-            </a>
-            <div class="dropdown-menu" aria-labelledby="trans_dropdown">
-              <a class="dropdown-item" href="/transactions/real">Real World Transactions</a>
-              <a class="dropdown-item" href="/transactions/records">Transaction Records</a>
-              <a class="dropdown-item" href="/transactions/tool">Transaction Tool</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/teams">Teams</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Leagues
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <a class="dropdown-item" href="global">Global League</a>
-              <a class="dropdown-item" href="club">Club Tournement</a>
-              <a class="dropdown-item" href="national">National Teams</a>
-            </div>
-          </li>
-    </ul>
-  </div>
-</nav>
+    <nav class="nav">
+        <div class="nav-list">
+            <span class="nav-item"><a href="/"><img class="header-logo" src="/static/icons/football.png">Football</a></span>
+            <span class="nav-item">
+                <a href="/round/1">Draft</a>
+                <ul class="dropdown-ul">
+                    {% for i in range(1, 14) %}
+                    <li><a href="/round/{{i}}">Round{{i}}</a></li>
+                    {% endfor %}
+                </ul>
+            </span>
+            <span class="nav-item">
+                <a href="/transactions/tool">Transactions</a>
+                <ul class="dropdown-ul">
+                    <li><a href="/transactions/tool">Tool</a></li>
+                    <li><a href="/transactions/records">Records</a></li>
+                    <li><a href="/transactions/tool">Real World</a></li>
+                </ul>
+            </span>
+        </div>
+    </nav>
+    <script>
+        $(".dropdown-ul").hide();
+        $(".nav-item").hover(
+            function(){
+                $(this).find(".dropdown-ul").show();
+                $(this).find(".dropdown-ul").hover(
+                function(){
+                    $(this).find(".dropdown-ul").show();
+                },function(){
+                    $(this).find(".dropdown-ul").hide();
+                });
+            },
+            function(){
+                $(".dropdown-ul").hide();
+        });
+    </script>

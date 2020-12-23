@@ -9,19 +9,24 @@
      }
      label{
          margin: 12px 8px 12px 40px;
+         width: 135px;
      }
      button{
         margin: 6px 8px 12px 40px;
         height: 48px;
         font-size: 12px;
      }
+     .upload-image{
+        font-size: 18px;
+     }
      .dropdown_search{
         list-style-type: none;
         margin-top:-10px;
      }
-     .drop_elem{
+     .result_elem{
         font-size: 18px;
         margin-top: -1px;
+        margin-left: 147px;
         display: flex;
         border: 1px;
         border-style: solid;
@@ -29,11 +34,10 @@
         align-items: center;
         width: 230px;
         height: 38px;
-        margin-left: 146px;
         padding-left: 10px;
         background-color: #eeeeee;
      }
-     .drop_elem:hover{
+     .result_elem:hover{
         background-color: #cccccc;
      }
 </style>
@@ -43,50 +47,51 @@
     <div id="drop-div">
         <h3>Drop & Add</h3>
         <label for="drop">Player dropped: </label>
-        <input type="text" placeholder="Enter Name" id="drop"><br>
-        <ul class="dropdown_search" id="drop_result">
-        </ul>
+        <input type="text" class="input_sug" placeholder="Enter Name" id="drop"><br>
+        <ul class="dropdown_search" id="drop_result"></ul>
         <label for="add">Player added: </label>
         <input type="text" placeholder="Enter Name" id="add"><br>
-        <label for="add"> Position: </label>
+        <label for="pos"> Position: </label>
         <input type="text" placeholder="Enter Name" id="pos"><br>
-        <label for="add"> Nation: </label>
+        <label for="nat"> Nation: </label>
         <input type="text" placeholder="Enter Name" id="nat"><br>
+        <label class="upload" for="u-file">Choose a Photo</label><br>
+        <label><input type="file" id="u-file" accept=".jpg,.png"></label><br>
         <button id="dna" class="btn btn-outline-success">Submit</button>
     </div>
     <div id="trade-div">
         <h3> Trade </h3>
-        <label for="drop">Trade Requester: </label>
-        <input type="text" placeholder="Enter Name" id="req"><br>
+        <label for="drop">Requester: </label>
+        <input type="text" class="input_sug" placeholder="Enter Name" id="req"><br>
         <label for="out">Trade Out: </label>
-        <input type="text" placeholder="Enter Name" id="out"><br>
+        <input type="text" class="input_sug" placeholder="Enter Name" id="out"><br>
+        <ul class="dropdown_search" id="out_result"></ul>
         <label for="in">Trade In: </label>
-        <input type="text" placeholder="Enter Name" id="in"><br>
+        <input type="text" class="input_sug" placeholder="Enter Name" id="in"><br>
+        <ul class="dropdown_search" id="in_result"></ul>
         <button id="trade" class="btn btn-outline-primary">Submit</button>
     </div>
     <script language="JavaScript" type="text/javascript">
         $(document).ready(function(){
             console.log('ready');
 
-            var url = 'https://' + document.domain + ':' + location.port;
+            var url = 'http://' + document.domain + ':' + location.port;
             console.log(url);
             var socket = io.connect(url);
 
             $('#drop-div').on('click','#dna',function(){
                 console.log('drop and add');
+                //check if poses r valid
+                let poses=["ST","LW","RW","LM","RM","CAM","CM","CDM","LB","RB","CB","GK"]
                 add = $('#add').val();
                 drop = $('#drop').val();
                 pos = $('#pos').val();
                 nat = $('#nat').val();
                 console.log(add,drop,pos,nat);
-                socket.emit('pick',{add:add,drop:drop,pos:pos,nat:nat});
-            });
-            $('#drop').on('input',function(){
-                sug = $('#drop').val();
-                if(sug.length>2){
-                    sug = $('#drop').val();
-                    console.log('typing...',sug);
-                    socket.emit('suggest',{sug:sug});
+                const pic = document.getElementById('u-file').files[0]
+                console.log(pic)
+                if(poses.includes(pos)){
+                   socket.emit('pick',{add:add,drop:drop,pos:pos,nat:nat});
                 }
             });
             $('#trade-div').on('click','#trade',function(){
@@ -97,21 +102,33 @@
                 console.log(req,out,tin);
                 socket.emit('trade',{req:req,out:out,tin:tin});
             });
+
+            //set a class for input fields (.input_sug)
+            $('.input_sug').on('input',function(){
+                sug = $(this).val();
+                if(sug.length>2){
+                    socket.emit('suggest',{sug:sug,field:$(this).attr('id')});
+                }
+            });
             socket.on('sug_result',function(msg){
                 var result = msg['result'];
+                //flask return ID
+                var id = msg['ID'];
+                var this_id = "#"+id;
+                var drop_id = "#"+id+"_result";
                 console.log(result);
                 var div = " "
                 result.forEach(function(item){
-                    div+='<li class="drop_elem">'+item['player']+'</li>'
+                    div+='<li class="result_elem">'+item['player']+'</li>'
                 });
-                $('.dropdown_search').html(div);
+                //give each .dropdown search a unique ID
+                $(drop_id).html(div);
 
-                $('.drop_elem').on('click',function(){
+                $('.result_elem').on('click',function(){
                     name = $(this).text();
-                    $('.dropdown_search').empty();
-                    $('#drop').val(name);
+                    $(drop_id).empty();
+                    $(this_id).val(name);
                 });
-
             });
         });
 

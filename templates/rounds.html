@@ -78,11 +78,11 @@
 <body>
     <h1>Round {{r}} Summary</h1>
     <div class="choices">
-        <span class="player-box c1">Best Player <img class="player-card" src="/static/投影片1.jpg"></span>
-        <span class="player-box c2">Worst Player <img class="player-card" src="/static/投影片2.jpg"></span>
-        <span class="player-box c3">Best Pick <img class="player-card" src="/static/投影片3.jpg"></span>
-        <span class="player-box c4">Worst Pick <img class="player-card" src="/static/投影片5.jpg"></span>
-        <span class="player-box c5">Rising Star <img class="player-card" src="/static/投影片6.jpg"></span>
+        <span class="player-box c1">Best Player <img class="player-card" src="/static/cards/投影片1.jpg"></span>
+        <span class="player-box c2">Worst Player <img class="player-card" src="/static/cards/投影片2.jpg"></span>
+        <span class="player-box c3">Best Pick <img class="player-card" src="/static/cards/投影片3.jpg"></span>
+        <span class="player-box c4">Worst Pick <img class="player-card" src="/static/cards/投影片5.jpg"></span>
+        <span class="player-box c5">Rising Star <img class="player-card" src="/static/cards/投影片6.jpg"></span>
     </div>
     <br>
     <div class="flex-box">
@@ -92,7 +92,7 @@
                 <img class="club" {{"src=/static/teams/"+player['Club'] +".jpg"}}>
                 <span class="player-name">{{player['Player']}}</span>
             </div>
-            <img class="player-card" {{"src=/static/投影片%s.JPG"%player['ID']}}>
+            <img class="player-card" {{"src=/static/cards/投影片%s.JPG"%player['ID']}}>
         </span>
         {% endfor %}
     </div>

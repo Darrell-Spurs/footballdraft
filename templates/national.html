@@ -72,7 +72,7 @@
             <h2 class="group-title">{{ groups[i] }}</h2>
             {% for player in results[i] %}
                 <div class="p_info">
-                    <img class="p_cards" {{" src= /static/投影片%s.JPG"%player['ID'] }}>
+                    <img class="p_cards" {{" src= /static/cards/投影片%s.JPG"%player['ID'] }}>
 
                     <div class="p_words">
                         <p class="p_name">{{ player['Player'][player['Player'].find(' ')+1:] if player['Player'].find(' ')!=(-1) else player['Player'] }}</p>
