@@ -55,9 +55,10 @@
         <input type="text" placeholder="Enter Name" id="pos"><br>
         <label for="nat"> Nation: </label>
         <input type="text" placeholder="Enter Name" id="nat"><br>
-        <label class="upload" for="u-file">Choose a Photo</label><br>
-        <label><input type="file" id="u-file" accept=".jpg,.png"></label><br>
-        <button id="dna" class="btn btn-outline-success">Submit</button>
+        <form method="POST" enctype="multipart/form-data">
+            <label><input type="file" style="display:none" name="file" accept="image/png, image/jpeg, image/jpg"><i class="btn btn-outline-secondary">Select File</i></label><br>
+            <label><input type="submit" id="dna" class="btn btn-outline-success" value="Upload"></label>
+        </form>
     </div>
     <div id="trade-div">
         <h3> Trade </h3>

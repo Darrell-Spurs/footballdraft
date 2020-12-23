@@ -19,7 +19,7 @@ from werkzeug.middleware.shared_data import SharedDataMiddleware
 app.add_url_rule('/upload/<filename>', 'uploaded_file',
                   build_only=True)
 app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
-    '/upload': app.config['UPLOAD_FOLDER']
+    '/uploadfile': app.config['UPLOAD_FOLDER']
 })
 
 async_mode = "threading"
@@ -36,8 +36,6 @@ def db_connect():
                                  db='heroku_594ae4223a52c95',
                                  # charset='urf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
-
-
 def r_connect():
     connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
                                  user='b263072c1ab18d',
@@ -46,8 +44,6 @@ def r_connect():
                                  # charset='urf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
     return connection
-
-
 def db_control(connection, sql, commit=False, fetch=0):
     with connection.cursor() as cursor:
         cursor.execute(sql)
@@ -58,26 +54,18 @@ def db_control(connection, sql, commit=False, fetch=0):
         elif fetch == 2:
             return cursor.fetchall()
     connection.close()
-
-
 def add_to_N(nteam, action_name):
     conn = r_connect()
     sql = "UPDATE all_players SET NATIONAL='%s' WHERE ID=%s" % (nteam, action_name)
     db_control(conn, sql, commit=True)
-
-
 def del_from_N(action_name):
     conn = r_connect()
     sql = "UPDATE all_players SET NATIONAL=NULL WHERE ID=%s" % (action_name)
     db_control(conn, sql, commit=True)
-
-
 def modify_num(a):
     if a > 10:
         return str(a)
     return "0" + str(a)
-
-
 def modify_date(date):
     y = date[0]
     m = date[1]
@@ -86,8 +74,6 @@ def modify_date(date):
     for elem in map(modify_num, [y, m, d]):
         day += elem
     return day
-
-
 def allowed_files(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENTION
 
@@ -199,8 +185,23 @@ def transactions_records():
     return render_template('trans_record.html', trades=trades, dropnadd=dnas)
 
 
-@app.route('/transactions/tool')
+@app.route('/transactions/tool',methods=["GET","POST"])
 def transactions_tool():
+    if request.method == "POST":
+        if 'file' not in request.files:
+            flash("No Files")
+            return redirect(request.url)
+        file = request.files['file']
+        if file == "":
+            flash("Empty")
+            return redirect(request.url)
+        if file and allowed_files(file.filename):
+            filename = secure_filename(file.filename)
+            #os.chmod("C:\\",)
+            path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            print(path)
+            file.save(path)
+            return redirect(request.url)
     return render_template('transaction.html')
 
 
@@ -265,15 +266,11 @@ def upload_file():
             path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             print(path)
             file.save(path)
-            return redirect(url_for("uploaded_file", filename=filename))
-    print("????")
+            return redirect(request.url)
     return render_template("upload.html")
 
 
-@app.route("/upload/<filename>")
-def uploaded_file(filename):
-    send_from_directory(app.config["UPLOAD_FOLDER"], filename)
-    return redirect("/upload")
+
 
 
 @io.on('connect')
