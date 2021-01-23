@@ -1,91 +1,38 @@
+#import modules
 from flask import Flask, request, render_template, url_for, redirect, flash, send_from_directory
 from flask_socketio import SocketIO, send, emit
 import time
 import json
-import pymysql
-import pymysql.cursors
 import csv
 import os
 from werkzeug.utils import secure_filename
-
-UPLOAD_FOLDER = r"C:\Users\darre\PycharmProjects\heroku\static\players"
-ALLOWED_EXTENTION = {'jpg', 'png', 'jpeg'}
+from werkzeug.middleware.shared_data import SharedDataMiddleware
+from func import DB_Function, Gen_Functions
+#set app
 app = Flask(__name__)
+
+#variables
+UPLOAD_FOLDER = r"C:\Users\darre\PycharmProjects\heroku\static\players"
 app.jinja_env.add_extension('jinja2.ext.do')
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-from werkzeug.middleware.shared_data import SharedDataMiddleware
-
-app.add_url_rule('/upload/<filename>', 'uploaded_file',
-                  build_only=True)
+app.add_url_rule('/upload/<filename>', 'uploaded_file', build_only=True)
 app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
     '/uploadfile': app.config['UPLOAD_FOLDER']
 })
 
+#set socket
 async_mode = "threading"
 io = SocketIO(app=app, async_mode=async_mode)
 
-
-# io = SocketIO(app=app, async_mode=async_mode)
-
-def db_connect():
-    global connection
-    connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
-                                 user='b263072c1ab18d',
-                                 password='e4aaaba1',
-                                 db='heroku_594ae4223a52c95',
-                                 # charset='urf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-def r_connect():
-    connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
-                                 user='b263072c1ab18d',
-                                 password='e4aaaba1',
-                                 db='heroku_594ae4223a52c95',
-                                 # charset='urf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-    return connection
-def db_control(connection, sql, commit=False, fetch=0):
-    with connection.cursor() as cursor:
-        cursor.execute(sql)
-        if commit == True:
-            connection.commit()
-        if fetch == 1:
-            return cursor.fetchone()
-        elif fetch == 2:
-            return cursor.fetchall()
-    connection.close()
-def add_to_N(nteam, action_name):
-    conn = r_connect()
-    sql = "UPDATE all_players SET NATIONAL='%s' WHERE ID=%s" % (nteam, action_name)
-    db_control(conn, sql, commit=True)
-def del_from_N(action_name):
-    conn = r_connect()
-    sql = "UPDATE all_players SET NATIONAL=NULL WHERE ID=%s" % (action_name)
-    db_control(conn, sql, commit=True)
-def modify_num(a):
-    if a > 10:
-        return str(a)
-    return "0" + str(a)
-def modify_date(date):
-    y = date[0]
-    m = date[1]
-    d = date[2]
-    day = ""
-    for elem in map(modify_num, [y, m, d]):
-        day += elem
-    return day
-def allowed_files(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENTION
-
-
+#routes
 @app.route('/')
 def about():
     return render_template('home.html')
 
-
+#all player list
 @app.route('/players')
 def index():
-    db_connect()
+    connection = func.r_connect()
     with connection.cursor() as cursor:
         sql = "SELECT * FROM all_players"
         cursor.execute(sql)
@@ -96,10 +43,10 @@ def index():
     return render_template("players.html",
                            all_players=result)
 
-
+#draft result of each round
 @app.route('/round/<r>')
 def get_round(r):
-    conn = r_connect()
+    conn = func.r_connect()
     sql = f"SELECT ID,Player,Position,Club,Nation,Age FROM all_players WHERE ROUND={r}"
     result = db_control(conn, sql, fetch=2)
     for elem in result:
@@ -269,7 +216,12 @@ def upload_file():
             return redirect(request.url)
     return render_template("upload.html")
 
-
+@app.route("/profile/<name>")
+def profile(name):
+    name = full_name(name)
+    print(name)
+    stats = get_profile(name)
+    return render_template("player_profile.html",name=name,stats=stats)
 
 
 

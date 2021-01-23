@@ -1,0 +1,133 @@
+{% include 'header.html' %}
+<title>{{name}}</title>
+<style>
+    *{
+    font-family: Candara;
+    }
+    .title-div{
+        padding: 6px 12px 6px 12px;
+    }
+    .player-title{
+        font-size: 64px;
+        font-weight: bold;
+    }
+    .player-subtitle{
+        font-size: 32px;
+    }
+    .page-div{
+        display: flex;
+        flex-direction: row;
+    }
+    .cats,.page-div{
+    	margin-left:12px;
+    }
+    .category{
+        background-color: white;
+        margin-right: 6px;
+        line-height: 26px;
+        font-size: 18px;
+    }
+    .table-stats{
+        margin-top: 12px;
+        border-collapse: collapse;
+    }
+    .table-info{
+        margin-left: 100px;
+    }
+    .table-stats tr{
+        line-height: 40px;
+    }
+    .table-stats tr:first-child{
+        background-color: black;
+        color: white;
+    }
+    .table-stats tr:first-child td{
+        border-top: none;
+    }
+    .table-stats td{
+        font-size: 24px;
+        text-align: center;
+        width: 80px;
+        border-top: 2px solid #CCCCCC;
+        border-bottom: 2px solid #CCCCCC;
+    }
+    .table-stats td:first-child{
+        font-size: 24px;
+        width: 200px;
+    }
+    .profile{
+        margin-right: 50px;
+        margin-left: auto;
+    }
+    .table-info{
+        background-color: blue;
+    }
+    .table-info tr{
+        line-height: 28px;
+    }
+    .table-info td{
+        font-size:18px;
+    }
+</style>
+</head>
+<body>
+	{{stats}}
+	<div class="title-div">
+		<div class="player-title">{{name}}</div>
+		<div class="player-subtitle">Right Winger, {{stats[3]}},  {{stats[4]}}</div>
+	</div>
+	<div class="cats">
+		<button class="category" id="sum">Summary</button>
+		<button class="category" id="att">Attacking</button>
+		<button class="category" id="def">Defending</button>
+		<button class="category" id="pas">Passing</button>
+		<button class="category" id="dis">Discipline</button>
+	</div>
+	<div class="page-div">
+		<table class="table-stats sum">
+			<tr>
+				<td>Compition</td>
+				<td>Apps</td>
+				<td>M</td>
+				<td>G</td>
+				<td>A</td>
+			</tr>
+			<tr>
+				<td>Premier League</td>
+				<td>2(6)</td>
+				<td>306</td>
+				<td>1</td>
+				<td>0</td>
+			</tr>
+			<tr>
+				<td>Europa League</td>
+				<td>6(2)</td>
+				<td>457</td>
+				<td>4</td>
+				<td>0</td>
+			</tr>
+		</table>
+
+		<div class="profile">
+			<table class="table-info">
+				<tr><td>Nationality: Argentina</td></tr>
+				<tr><td>Nationality: Argentina</td></tr>
+				<tr><td>Nationality: Argentina</td></tr>
+				<tr><td>Nationality: Argentina</td></tr>
+			</table>
+		</div>
+	<div style="height: 10000px">
+	</div>
+
+	<script language="JavaScript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var table = ".sum"
+		$(".category").on("click",function(){
+			console.log($(this).attr("id"));
+			var show = $(this).attr("id");
+			$(table).css("display","none");
+			$("."+show).css("display","block");
+		});
+	</script>
+</body>
+</html>
