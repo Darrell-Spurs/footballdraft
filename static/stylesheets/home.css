@@ -1,0 +1,62 @@
+.home{
+    padding-left: 20px;
+    padding-top:10px;
+}
+.sub-title{
+    padding-left: 20px;
+    padding-top:10px;
+    font-size:40px;
+}
+.news{
+    padding-left: 20px;
+    width: 900px;
+    height: auto;
+}
+.search-field{
+    padding: 16px 10px 8px 16px;
+    font-size: 28px;
+}
+.result-field{
+    padding: 4px 4px 4px 8px;
+    font-size: 28px;
+}
+.card_result{
+    width: 180px;
+    padding: 16px 30px 16px 30px;
+}
+.check{
+    color: green;
+    vertical-align: middle;
+    border-width: 0px;
+    margin-left: 3px;
+    padding: 0 0 0 0;
+    width: 4%;
+}
+.formation_select{
+    padding: 16px 10px 8px 16px;
+    font-size: 28px;
+}
+.builder{
+  display: flex;
+  justify-content: center;
+}
+.card-div{
+    text-align: center;
+}
+.b-add{
+    height: 30px;
+    padding: 0px 5px 6px 5px;
+}
+.s_name{
+    padding: 12px 0px 12px 16px;
+}
+.s_save{
+}
+.game-results{
+    background-color: rgb(83, 30, 83);
+    color: blue;
+}
+.game-results table{
+    background-color: rgb(83, 30, 83);
+    border: 1px  rgb(175, 14, 148)px solid;
+}

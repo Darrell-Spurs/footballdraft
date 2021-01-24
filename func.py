@@ -1,40 +1,48 @@
 import pymysql
 
-class DB_Function:
+
+class DbFunctions:
     def __init__(self):
-        self.connection = pymysql.connect(host='us-cdbr-east-02.cleardb.com',
-                                     user='b263072c1ab18d',
-                                     password='e4aaaba1',
-                                     db='heroku_594ae4223a52c95',
-                                     # charset='urf8mb4',
-                                     cursorclass=pymysql.cursors.DictCursor)
+        self.connection = None
+        self.db_connect()
+
+    def db_connect(self):
+        self.connection = pymysql.connect(host ='us-cdbr-east-02.cleardb.com',
+                                         user ='b263072c1ab18d',
+                                         password ='e4aaaba1',
+                                         db='heroku_594ae4223a52c95',
+                                         # charset='urf8mb4',
+                                         cursorclass = pymysql.cursors.DictCursor)
+
     # execute sql to get db data
-    def db_control(self, sql, commit=False, fetch=0):
+    def db_control(self, sql, commit=False, fetch="", close=True):
         with self.connection.cursor() as cursor:
             cursor.execute(sql)
-            if commit == True:
+            if commit:
                 self.connection.commit()
-            if fetch == 1:
+            if fetch == "one":
                 data = cursor.fetchone()
-                self.connection.close()
                 return data
-            elif fetch == 2:
+            elif fetch == "all":
                 data = cursor.fetchall()
-                self.connection.close()
                 return data
-        self.connection.close()
+        if close:
+            print(">>>>")
+            self.connection.close()
         return None
 
-    def add_to_Nation(self, nteam, action_name):
+    # add player to national team
+    def add_to_nation(self, nteam, action_name):
         sql = "UPDATE all_players SET NATIONAL='%s' WHERE ID=%s" % (nteam, action_name)
         self.db_control(sql, commit=True)
 
-    def del_from_Nation(self,action_name):
+    # remove player from national team
+    def del_from_nation(self,action_name):
         sql = "UPDATE all_players SET NATIONAL=NULL WHERE ID=%s" % (action_name)
         self.db_control(sql, commit=True)
 
     # fetch data of player profile page from db
-    def get_profile(self,name):
+    def get_profile(self, name):
         with self.connection.cursor() as cursor:
             sql = f"SELECT * FROM stats WHERE player='{name}'"
             print(sql)
@@ -45,16 +53,17 @@ class DB_Function:
                 vals.append(val)
         return vals
 
-class Gen_Functions:
+
+class GenFunctions:
     def __init__(self):
         self.ALLOWED_EXTENTION = {'jpg', 'png', 'jpeg'}
 
-    #upload
-    def allowed_files(self,filename):
+    # upload
+    def allowed_files(self, filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENTION
 
     # just functions
-    def modify_num(self,a):
+    def modify_num(self, a):
         if a > 10:
             return str(a)
         return "0" + str(a)

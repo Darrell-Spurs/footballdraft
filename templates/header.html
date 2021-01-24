@@ -3,71 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        *{
-            font-family: 'Candara';
-        }
-        nav{
-            background-color: #eeeeee;
-            color: #111111;
-            line-height: 72px;
-            height: auto;
-            margin: 0 0 0 0;
-            padding: 0 0 0 0;
-         }
-         .header-logo{
-            height: 52px;
-            margin-right: 20px;
-         }
-         a:hover{
-             text-decoration-line: none !important;
-        }
-        .nav-list a{
-            vertical-align: center;
-            text-align: center;
-            width: auto;
-            padding: 0 20px 0 20px;
-            font-size: 28px;
-            display: inline-block;
-            transition: 1s;
-            color: #666666;
-        }
-        @keyframes color-change{
-            0% {background-color: #dddddd;}
-            50% {background-color: #cccccc;}
-            100% {background-color: #dddddd;}
-        }
-        .nav-item{
-            float: left;
-            overflow: hidden;
-        }
-        .nav-list>span>a:hover{
-           color:#333333;
-           text-decoration-line: none;
-           animation-name: color-change;
-           animation-duration: 2s;
-           animation-iteration-count: infinite;
-        }
-        .dropdown-ul{
-            float: left;
-            list-style-type:none;
-            margin: -2px 0 0 0;
-            padding: 0 0 0 0;
-            line-height:36px;
-            position: absolute;
-            display: block;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown-ul li{
-            background-color:#DDDDDD;
-            font-size: 18px;
-            padding:3px 2px 3px 2px;
-         }
-         .dropdown-ul li:hover{
-            animation: none;
-         }
-    </style>
+             
+    <link rel="stylesheet" href="/static/stylesheets/main.css">
+   
+    {% block style_list %}
+
+    {% endblock %}
+
     <!---Title--->
     {% block title %}
     <title> Welcome to the Website of Football Draft </title>
@@ -99,6 +41,7 @@
             </span>
         </div>
     </nav>
+</head>
     <script>
         $(".dropdown-ul").hide();
         $(".nav-item").hover(
@@ -115,3 +58,11 @@
                 $(".dropdown-ul").hide();
         });
     </script>
+    {% block body %}
+
+    {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js"></script>
+</html>
